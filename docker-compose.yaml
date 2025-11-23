@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tbcheck
+      POSTGRES_PASSWORD: tbcheck
+      POSTGRES_DB: tbcheck
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tbcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "8001:8000"
+    environment:
+      POSTGRES_URL: postgresql+asyncpg://tbcheck:tbcheck@postgres:5432/tbcheck
+      SECRET_KEY: dev-secret-key
+      ACCESS_TOKEN_EXPIRE_MINUTES: 120
+      INVITATION_CODE: dev-invitation-code
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
