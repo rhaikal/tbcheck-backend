@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 
 from config import settings
 
-engine = create_async_engine(settings.postgres_url, echo=False, future=True)
+engine = create_async_engine(settings.postgres_url, echo=False)
 
 async_session = sessionmaker(
     engine,
@@ -20,6 +20,6 @@ async def get_session() -> AsyncSession:
         yield session
 
 
-async def init_db():
+async def init_db() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)

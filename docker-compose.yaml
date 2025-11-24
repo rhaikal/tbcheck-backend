@@ -23,14 +23,21 @@ services:
       - "8001:8000"
     environment:
       POSTGRES_URL: postgresql+asyncpg://tbcheck:tbcheck@postgres:5432/tbcheck
+
+      JWT_ALGORITHM: HS256
       SECRET_KEY: dev-secret-key
       ACCESS_TOKEN_EXPIRE_MINUTES: 120
+
       INVITATION_CODE: dev-invitation-code
+
+      DETECTION_UPLOAD_URL: /app/data/raw/image
+      DETECTION_MODEL_PATH: /app/models/image-detection/inception.h5
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - .:/app
+      - ./data/raw/image:/app/data/raw/image
 
 volumes:
   postgres_data:
