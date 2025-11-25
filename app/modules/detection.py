@@ -12,7 +12,7 @@ PREDICTION_THRESHOLD = 0.5
 
 
 def save_upload_file(file: UploadFile) -> str:
-    filepath = f"{settings.detection_upload_url}/{file.filename}"
+    filepath = f"{settings.detection_upload_path}/{file.filename}"
     with open(filepath, "wb") as f:
         f.write(file.file.read())
     return filepath
@@ -34,7 +34,9 @@ def cleanup_file(filepath: str) -> None:
 
 
 def load_prediction_model() -> object:
-    return load_model(settings.detection_model_path)
+    return load_model(
+        f"{settings.detection_model_dir}/{settings.detection_model_filename}"
+    )
 
 
 def predict_image(img_array: np.ndarray, model: object) -> np.ndarray:
