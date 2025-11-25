@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from starlette.responses import RedirectResponse
+
 from app.core.database import init_db
 from app.routers.auth import router as auth_router
 from app.routers.detection import router as detection_router
@@ -37,6 +39,6 @@ setup_cors(app)
 setup_routers(app)
 
 
-@app.get("/")
-async def read_root():
-    return {"message": "TBCheck API"}
+@app.get("/", include_in_schema=False)
+async def redirect():
+    return RedirectResponse(url="/docs")
