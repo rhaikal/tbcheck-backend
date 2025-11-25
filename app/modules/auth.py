@@ -24,6 +24,10 @@ async def register_user(
     new_user = User(
         email=user_data.email,
         password=get_password_hash(user_data.password),
+        profession=user_data.profession,
+        str_number=user_data.str_number,
+        medical_institutions=user_data.medical_institutions,
+        phone_number=user_data.phone_number,
     )
     session.add(new_user)
     await session.commit()
