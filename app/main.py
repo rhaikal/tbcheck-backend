@@ -1,5 +1,4 @@
 import os
-import gdown
 
 from contextlib import asynccontextmanager
 
@@ -9,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from app.core.database import init_db
+from app.core.detection import setup_model as setup_detection_model
 from app.routers.auth import router as auth_router
 from app.routers.detection import router as detection_router
 
@@ -35,20 +35,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     os.makedirs(settings.detection_upload_path, exist_ok=True)
     os.makedirs(settings.detection_model_dir, exist_ok=True)
-
-    detection_model_path = os.path.join(
-        settings.detection_model_dir, settings.detection_model_filename
-    )
-
-    # Download model if not already present
-    if not os.path.exists(detection_model_path):
-        gdown.download(
-            settings.detection_model_gdrive_url,
-            detection_model_path,
-            quiet=False,
-            fuzzy=True,
-        )
-
+    setup_detection_model()
     yield
 
 

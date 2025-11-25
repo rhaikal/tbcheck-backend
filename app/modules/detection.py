@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 from fastapi import UploadFile
 from keras.models import load_model
