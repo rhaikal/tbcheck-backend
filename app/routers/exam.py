@@ -10,7 +10,7 @@ from app.schemas.pagination import PaginationParams
 from app.dependencies.auth import require_auth
 from app.models.user import User
 
-from app.modules.exam import get_exams, get_total_exams
+from app.modules.exam import get_exams, get_total_exams, get_exam_by_id
 
 router = APIRouter()
 
@@ -36,3 +36,13 @@ async def get_all(
             **({"current_size": size} if size else {}),
         },
     }
+
+
+@router.get("/{exam_id}")
+async def get_by_id(
+    exam_id: int,
+    user: Annotated[User, Depends(require_auth)],
+    session: AsyncSession = Depends(get_session),
+):
+    exam = await get_exam_by_id(exam_id, user, session)
+    return exam

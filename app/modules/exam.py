@@ -47,3 +47,10 @@ async def get_total_exams(user: User, session: AsyncSession):
         select(func.count(Exam.id)).where(Exam.user_id == user.id)
     )
     return result.scalar_one()
+
+
+async def get_exam_by_id(exam_id: int, user: User, session: AsyncSession):
+    result = await session.execute(
+        select(Exam).where(Exam.user_id == user.id).where(Exam.id == exam_id)
+    )
+    return result.scalars().first()
