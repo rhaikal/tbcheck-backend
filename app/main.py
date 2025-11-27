@@ -9,6 +9,7 @@ from app.core.database import init_db
 from app.core.detection import setup_model as setup_detection_model
 from app.routers.auth import router as auth_router
 from app.routers.detection import router as detection_router
+from app.routers.exam import router as exam_router
 
 
 def setup_cors(app: FastAPI) -> None:
@@ -24,6 +25,7 @@ def setup_cors(app: FastAPI) -> None:
 def setup_routers(app: FastAPI) -> None:
     app.include_router(auth_router, prefix="/auth", tags=["auth"])
     app.include_router(detection_router, prefix="/detection", tags=["detection"])
+    app.include_router(exam_router, prefix="/exam", tags=["exam"])
 
 
 @asynccontextmanager
