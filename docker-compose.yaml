@@ -34,7 +34,8 @@ services:
       DETECTION_MODEL_DIR: /app/models/image-detection
       DETECTION_MODEL_FILENAME: inception.h5
 
-      DETECTION_UPLOAD_PATH: /app/data/raw/image
+      DETECTION_RAW_PATH: /app/data/raw/image
+      DETECTION_PROCESSED_PATH: /app/data/processed/image
     depends_on:
       postgres:
         condition: service_healthy
