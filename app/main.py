@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.responses import RedirectResponse
@@ -40,6 +41,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 setup_cors(app)
 setup_routers(app)
+
+app.mount("/data", StaticFiles(directory="data"), name="data")
 
 
 @app.get("/", include_in_schema=False)
