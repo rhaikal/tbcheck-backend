@@ -7,7 +7,7 @@ from pwdlib import PasswordHash
 
 from config import settings
 
-TOKEN_URL = "auth/token"
+TOKEN_URL = "auth/login"
 
 pwd_context = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
