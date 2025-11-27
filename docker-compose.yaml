@@ -38,9 +38,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - .:/app
-      - ./data/raw/image:/app/data/raw/image
 
 volumes:
   postgres_data:

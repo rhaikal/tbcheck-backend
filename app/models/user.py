@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from typing import Optional
-
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
@@ -9,7 +7,7 @@ from app.schemas.user import STR_NUMBER_FIELD, PHONE_NUMBER_FIELD
 
 
 class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int = Field(default=None, primary_key=True)
     email: EmailStr = Field(unique=True, index=True)
     password: str
     profession: str

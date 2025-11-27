@@ -1,5 +1,3 @@
-import os
-
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -11,8 +9,6 @@ from app.core.database import init_db
 from app.core.detection import setup_model as setup_detection_model
 from app.routers.auth import router as auth_router
 from app.routers.detection import router as detection_router
-
-from config import settings
 
 
 def setup_cors(app: FastAPI) -> None:
@@ -33,10 +29,10 @@ def setup_routers(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
-    os.makedirs(settings.detection_upload_path, exist_ok=True)
-    os.makedirs(settings.detection_model_dir, exist_ok=True)
     setup_detection_model()
+    app.state.inference_store = {}
     yield
+    app.state.inference_store.clear()
 
 
 app = FastAPI(lifespan=lifespan)

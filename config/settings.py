@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     detection_model_dir: str
     detection_model_filename: str
 
-    detection_upload_path: str
+    detection_raw_path: str
+    detection_processed_path: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"

@@ -37,8 +37,6 @@ def generate_overlay(img_path, heatmap, alpha=0.4):
 
     superimposed_img = cv2.addWeighted(img, 1 - alpha, heatmap_colored, alpha, 0)
 
-    # superimposed_img = cv2.cvtColor(superimposed_img, cv2.COLOR_BGR2RGB)
-
     success, buffer = cv2.imencode(".png", superimposed_img)
     if not success:
         raise ValueError("Image encoding failed")
