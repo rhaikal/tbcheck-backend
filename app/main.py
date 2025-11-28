@@ -42,7 +42,7 @@ app = FastAPI(lifespan=lifespan)
 setup_cors(app)
 setup_routers(app)
 
-app.mount("/data", StaticFiles(directory="data"), name="data")
+app.mount("/data", StaticFiles(directory="/data"), name="data")
 
 
 @app.get("/", include_in_schema=False)
