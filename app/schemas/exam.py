@@ -1,5 +1,6 @@
 from typing import Annotated, Optional
 from pydantic import BaseModel, StringConstraints
+from datetime import date
 
 GENDER_FIELD = Annotated[
     str,
@@ -16,3 +17,9 @@ class ExamPatient(BaseModel):
 class ExamSave(ExamPatient):
     inference_id: str
     notes: Optional[list[str]] = None
+
+
+class ExamFilterParams(BaseModel):
+    patient_name: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None

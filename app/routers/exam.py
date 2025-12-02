@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_session
 
 from app.schemas.pagination import PaginationParams
+from app.schemas.exam import ExamFilterParams
 
 from app.dependencies.auth import require_auth
 from app.models.user import User
@@ -18,6 +19,7 @@ router = APIRouter()
 @router.get("/")
 async def get_all(
     pagination: Annotated[PaginationParams, Depends()],
+    filters: Annotated[ExamFilterParams, Depends()],
     user: Annotated[User, Depends(require_auth)],
     session: AsyncSession = Depends(get_session),
 ):
@@ -25,8 +27,8 @@ async def get_all(
     size = pagination.size
 
     skip = (page - 1) * size if page and size else None
-    exams = await get_exams(user, session, skip, size)
-    total_exams = await get_total_exams(user, session)
+    exams = await get_exams(user, session, skip, size, filters)
+    total_exams = await get_total_exams(user, session, filters)
     return {
         "data": exams,
         "metadata": {

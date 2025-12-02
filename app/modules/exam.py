@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 
 from app.models.user import User
 from app.models.exam import Exam
+from app.schemas.exam import ExamFilterParams
 from sqlalchemy import func
 
 
@@ -22,18 +23,27 @@ async def save_exam(exam_data, user: User, inference_store, session: AsyncSessio
     return exam
 
 
-async def get_exams(user: User, session: AsyncSession, skip: int = 0, limit: int = 0):
+async def get_exams(user: User, session: AsyncSession, skip: int = 0, limit: int = 0, filters: ExamFilterParams = None):
     query = (
         select(
             Exam.id,
             Exam.user_id,
             Exam.patient_name,
+            Exam.patient_age,
             Exam.prediction_score,
             Exam.created_at,
         )
         .where(Exam.user_id == user.id)
         .order_by(Exam.created_at.desc())
     )
+
+    if filters:
+        if filters.patient_name:
+            query = query.where(Exam.patient_name.ilike(f"%{filters.patient_name}%"))
+        if filters.start_date:
+            query = query.where(func.date(Exam.created_at) >= filters.start_date)
+        if filters.end_date:
+            query = query.where(func.date(Exam.created_at) <= filters.end_date)
 
     if skip is not 0 and limit is not 0:
         query = query.offset(skip).limit(limit)
@@ -42,10 +52,18 @@ async def get_exams(user: User, session: AsyncSession, skip: int = 0, limit: int
     return result.mappings().all()
 
 
-async def get_total_exams(user: User, session: AsyncSession):
-    result = await session.execute(
-        select(func.count(Exam.id)).where(Exam.user_id == user.id)
-    )
+async def get_total_exams(user: User, session: AsyncSession, filters: ExamFilterParams = None):
+    query = select(func.count(Exam.id)).where(Exam.user_id == user.id)
+    
+    if filters:
+        if filters.patient_name:
+            query = query.where(Exam.patient_name.ilike(f"%{filters.patient_name}%"))
+        if filters.start_date:
+            query = query.where(func.date(Exam.created_at) >= filters.start_date)
+        if filters.end_date:
+            query = query.where(func.date(Exam.created_at) <= filters.end_date)
+    
+    result = await session.execute(query)
     return result.scalar_one()
 
 
