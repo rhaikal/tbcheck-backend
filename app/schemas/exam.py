@@ -20,6 +20,7 @@ class ExamSave(ExamPatient):
 
 
 class ExamFilterParams(BaseModel):
+    prediction_score: Optional[float] = None
     patient_name: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None

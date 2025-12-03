@@ -1,9 +1,11 @@
+from datetime import date
 from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
+from config import settings
 
 from app.schemas.pagination import PaginationParams
 from app.schemas.exam import ExamFilterParams
@@ -37,6 +39,28 @@ async def get_all(
             **({"current_page": page} if page else {}),
             **({"current_size": size} if size else {}),
         },
+    }
+
+
+@router.get("/summary")
+async def get_summary(
+    user: Annotated[User, Depends(require_auth)],
+    session: AsyncSession = Depends(get_session),
+):
+    today = date.today()
+    total_exams = await get_total_exams(user, session)
+    total_today_exams = await get_total_exams(
+        user, session, ExamFilterParams(start_date=today, end_date=today)
+    )
+    total_positive_exams = await get_total_exams(
+        user, session, ExamFilterParams(prediction_score=settings.detection_threshold)
+    )
+    recent_exams = await get_exams(user, session, 0, 5)
+    return {
+        "total_exams": total_exams,
+        "total_today_exams": total_today_exams,
+        "total_positive_exams": total_positive_exams,
+        "recent_exams": recent_exams,
     }
 
 

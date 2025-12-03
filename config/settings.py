@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     detection_model_gdrive_url: str
     detection_model_dir: str
     detection_model_filename: str
+    detection_threshold: float = 0.5
 
     detection_raw_path: str
     detection_processed_path: str
