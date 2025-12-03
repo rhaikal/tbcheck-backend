@@ -19,15 +19,35 @@ router = APIRouter()
 
 INVALID_INVITATION_CODE_ERROR = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
-    detail="Invalid invitation code",
+    detail={
+        "type": "invalid_invitation_code",
+        "loc": ["params", "invitation_code"],
+        "msg": "Invalid invitation code",
+        "input": None,
+        "ctx": {},
+    },
 )
+
 EMAIL_ALREADY_REGISTERED_ERROR = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
-    detail="Email already registered",
+    detail={
+        "type": "email_already_registered",
+        "loc": ["body", "email"],
+        "msg": "Email already registered",
+        "input": None,
+        "ctx": {},
+    },
 )
+
 INVALID_CREDENTIALS_ERROR = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Incorrect username or password",
+    detail={
+        "type": "invalid_credentials",
+        "loc": ["body", "username", "password"],
+        "msg": "Incorrect username or password",
+        "input": None,
+        "ctx": {},
+    },
     headers={"WWW-Authenticate": "Bearer"},
 )
 

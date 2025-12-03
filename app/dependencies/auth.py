@@ -8,11 +8,24 @@ from app.models import User
 
 UNAUTHORIZED_ERROR = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Invalid token",
+    detail={
+        "type": "unauthorized",
+        "loc": ["headers", "authorization"],
+        "msg": "Invalid token",
+        "input": None,
+        "ctx": {},
+    },
 )
+
 USER_NOT_FOUND_ERROR = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="User not found",
+    detail={
+        "type": "user_not_found",
+        "loc": ["body", "user_id"],
+        "msg": "User not found",
+        "input": None,
+        "ctx": {},
+    },
 )
 
 
