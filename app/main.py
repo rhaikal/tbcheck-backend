@@ -20,6 +20,7 @@ def setup_cors(app: FastAPI) -> None:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["X-Inference-ID", "X-Predicted-Score", "X-Predicted-Label"],
     )
 
 
@@ -39,10 +40,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/data", StaticFiles(directory="data"), name="data")
 setup_cors(app)
 setup_routers(app)
-
-app.mount("/data", StaticFiles(directory="data"), name="data")
 
 
 @app.get("/", include_in_schema=False)

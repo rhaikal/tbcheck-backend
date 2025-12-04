@@ -68,8 +68,11 @@ async def predict(
     return Response(
         content=overlay_bytes,
         headers={
-            "X-Predicted-Score": str(prediction_score),
             "X-Inference-ID": inference_id,
+            "X-Predicted-Score": str(prediction_score),
+            "X-Predicted-Label": str(
+                1 if prediction_score >= settings.detection_threshold else 0
+            ),
         },
         media_type="image/png",
     )
