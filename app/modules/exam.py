@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy import func, case
 
 from app.models.user import User
@@ -67,9 +68,7 @@ async def get_exams(
             Exam.patient_age,
             Exam.prediction_score,
             Exam.created_at,
-            case(
-                (Exam.prediction_score >= settings.detection_threshold, 1), else_=0
-            ).label("status"),
+            Exam.status,
         )
         .where(Exam.user_id == user.id)
         .order_by(Exam.created_at.desc())
@@ -97,6 +96,14 @@ async def get_total_exams(
 
 async def get_exam_by_id(exam_id: int, user: User, session: AsyncSession):
     result = await session.execute(
-        select(Exam).where(Exam.user_id == user.id).where(Exam.id == exam_id)
+        select(Exam)
+        .options(selectinload(Exam.notes))
+        .where(Exam.user_id == user.id)
+        .where(Exam.id == exam_id)
     )
-    return result.scalars().first()
+
+    exam = result.scalar_one_or_none()
+    exam_dict = {c.name: getattr(exam, c.name) for c in Exam.__table__.columns}
+    exam_dict["notes"] = exam.notes
+    exam_dict["status"] = exam.status
+    return exam_dict
